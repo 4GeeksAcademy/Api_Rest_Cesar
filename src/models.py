@@ -15,6 +15,9 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
+    def __repr__(self):
+        return f'<User {self.username}>'
+
     favorites: Mapped[list["Favorite"]] = relationship(back_populates="user")
 
     def serialize(self):
@@ -51,6 +54,9 @@ class Planet(db.Model):
     name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     climate: Mapped[str] = mapped_column(String(120), nullable=False)
     population: Mapped[str] = mapped_column(String(120), nullable=False)
+
+    def __repr__(self):
+        return f'<Planet {self.name}>'
 
     favorites: Mapped[list["Favorite"]] = relationship(back_populates="planet")
 
