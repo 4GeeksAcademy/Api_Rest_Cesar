@@ -205,13 +205,6 @@ def login():
     return jsonify({"msg": "Login successful", "user_id": user.id}), 200
 
 
-# [DELETE] /favorite/planet/<int:planet_id> Elimina un planet favorito con el id = planet_id
-
-@app.route('/planets/<int:planet_id>', methods=['DELETE'])
-def delete_planet(planet_id):
-
-
-
- if __name__ == '__main__':
+if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=False)
