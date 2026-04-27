@@ -152,20 +152,38 @@ def adding_a_people_fav(people_id):
 
 @app.route('/favorite/planet/<int:planet_id>', methods=['DELETE'])
 def delete_a_planet(planet_id): 
-    
-    consult_favorito = select(Favorite).where(Favorite.user_id == 1, Favorite.planet_id == planet_id)
-    delete_favorito = db.session.execute(consult_favorito).scalar_one_or_none()
-    
-    
-    if delete_favorito is None:
+    id_user = 1 
+    consult_fav = select(Favorite).where(Favorite.planet_id == planet_id, Favorite.user_id == id_user)
+    result = db.session.execute(consult_fav)
+    fav_to_delete = result.scalars().first()
+
+    if fav_to_delete is None:
         return jsonify({"msg": "Favorite not found"}), 404
     
     
-    db.session.delete(delete_favorito)
+    db.session.delete(fav_to_delete)
     db.session.commit()
     
-    
     return jsonify({"msg": "favorite deleted"}), 200
+
+
+# [DELETE] /favorite/people/<int:people_id> Elimina un people favorito con el id = people_id.
+
+@app.route('/favorite/people/<int:people_id>', methods=['DELETE'])
+def delete_a_people(people_id): 
+    id_user = 1 
+    consult_fav2 = select(Favorite).where(Favorite.character_id == people_id, Favorite.user_id == id_user)
+    result2 = db.session.execute(consult_fav2)
+    fav_to_delete2 = result2.scalars().first()
+
+    if fav_to_delete2 is None:
+        return jsonify({"msg": "Favorite not found"}), 404
+    
+    
+    db.session.delete(fav_to_delete2)
+    db.session.commit()
+    
+    return jsonify({"msg": "character favorite deleted"}), 200
 
 # LOGIN 
 
