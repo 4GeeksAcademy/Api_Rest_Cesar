@@ -36,6 +36,9 @@ class Character(db.Model):
     gender: Mapped[str] = mapped_column(String(120), nullable=False)
     hair: Mapped[str] = mapped_column(String(120), nullable=False)
 
+    def __repr__(self):
+     return f'<Character {self.name_character}>'
+
     favorites: Mapped[list["Favorite"]] = relationship(
         back_populates="character")
 

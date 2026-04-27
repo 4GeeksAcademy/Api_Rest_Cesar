@@ -32,13 +32,13 @@ def sitemap():
     return generate_sitemap(app)
 
 # [GET] /users Listar todos los usuarios del blog
-@app.route('/people', methods=['GET']) 
-def get_all_characters():
+@app.route('/users', methods=['GET']) 
+def get_all_users():
 
-    query = select(Character)
-    all_characters = db.session.execute(query).scalars().all()
+    query = select(User)
+    all_users = db.session.execute(query).scalars().all()
 
-    character_list = [c.serialize() for c in all_characters]
+    character_list = [c.serialize() for c in all_users]
     return jsonify(character_list), 200
 
 
@@ -88,9 +88,34 @@ def get_all_favorites(user_id):
     serialized_favorites = [f.serialize() for f in all_favorites]
     return jsonify(serialized_favorites), 200 
 
+# [POST] /users agregar usuarios
+@app.route('/user/', methods=['POST']) 
+
+def adding_a_user():
+ 
+ body = request.get_json()
+
+ email = body.get("email")
+
+ password = body.get("password")
+
+ username = body.get("username")
+
+ is_active = body.get("is_active")
+ 
+ new_user = User(email=email, password=password, username = username, is_active = is_active)
+
+ db.session.add(new_user)
+ db.session.commit()
+ 
+ return jsonify({"msg": "user created"}), 201
+
+ 
+
 # [POST] /favorite/planet/<int:planet_id> Añade un nuevo planet favorito al usuario actual con el id = planet_id 
 
 @app.route('/favorite/planet/<int:planet_id>', methods=['POST'])
+
 def adding_a_planet(planet_id): 
 
   planet = db.session.get(Planet, planet_id)
@@ -102,6 +127,26 @@ def adding_a_planet(planet_id):
 
   db.session.add(planet_favorite)
   db.session.commit()
+
+  return jsonify({"msg": "Planet added at fav"}), 201
+
+# [POST] /favorite/people/<int:people_id> Añade un nuevo people favorito al usuario actual con el id = people_id.
+
+@app.route('/favorite/people/<int:people_id>', methods=['POST'])
+
+def adding_a_people_fav(people_id): 
+
+  people = db.session.get(Character, people_id)
+
+  if people is None:
+      return jsonify ({"msg": "people not found"}), 404
+  
+  people_favorite = Favorite (user_id=1, character_id=people_id)
+
+  db.session.add(people_favorite)
+  db.session.commit()
+
+  return jsonify({"msg": "People added at fav"}), 201
 
 #   [DELETE] /favorite/planet/<int:planet_id> Elimina un planet favorito con el id = planet_id
 
